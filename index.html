@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Mini Game Hub 🎮</title>
+  <style>
+    body {
+      font-family: Arial;
+      background: #1e1e2e;
+      color: white;
+      text-align: center;
+      padding: 20px;
+    }
+
+    button {
+      padding: 10px;
+      margin: 5px;
+      border: none;
+      cursor: pointer;
+      background: #4cc9f0;
+      font-weight: bold;
+    }
+
+    .box {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+
+<body>
+
+<h1>🎮 Mini Game Hub</h1>
+
+<button onclick="showNumber()">🎯 Number Game</button>
+<button onclick="showRPS()">✊✋✌️ RPS</button>
+<button onclick="showTic()">❌⭕ Tic Tac Toe</button>
+
+<div id="game" class="box"></div>
+
+<script>
+let secret = 0;
+
+// ---------------- MENU CLEAR ----------------
+function clear() {
+  document.getElementById("game").innerHTML = "";
+}
+
+// ---------------- 1. NUMBER GAME ----------------
+function showNumber() {
+  clear();
+  secret = Math.floor(Math.random() * 100) + 1;
+
+  document.getElementById("game").innerHTML = `
+    <h2>Guess Number (1-100)</h2>
+    <input id="guess" type="number">
+    <button onclick="checkNumber()">Check</button>
+    <p id="result"></p>
+  `;
+}
+
+function checkNumber() {
+  let g = document.getElementById("guess").value;
+  let r = document.getElementById("result");
+
+  if (g < secret) r.innerHTML = "📉 Too Low!";
+  else if (g > secret) r.innerHTML = "📈 Too High!";
+  else r.innerHTML = "🎉 Correct!";
+}
+
+// ---------------- 2. RPS ----------------
+function showRPS() {
+  clear();
+
+  document.getElementById("game").innerHTML = `
+    <h2>✊✋✌️ Rock Paper Scissors</h2>
+    <button onclick="play('Rock')">Rock</button>
+    <button onclick="play('Paper')">Paper</button>
+    <button onclick="play('Scissors')">Scissors</button>
+    <p id="rpsResult"></p>
+  `;
+}
+
+function play(user) {
+  let choices = ["Rock", "Paper", "Scissors"];
+  let comp = choices[Math.floor(Math.random() * 3)];
+
+  let res = "";
+
+  if (user === comp) res = "🤝 Draw! CPU: " + comp;
+  else if (
+    (user === "Rock" && comp === "Scissors") ||
+    (user === "Paper" && comp === "Rock") ||
+    (user === "Scissors" && comp === "Paper")
+  ) res = "🎉 You Win! CPU: " + comp;
+  else res = "💀 You Lose! CPU: " + comp;
+
+  document.getElementById("rpsResult").innerHTML = res;
+}
+
+// ---------------- 3. TIC TAC TOE ----------------
+function showTic() {
+  clear();
+
+  let board = ["", "", "", "", "", "", "", "", ""];
+  let turn = "X";
+
+  let html = "<h2>❌⭕ Tic Tac Toe</h2><div>";
+
+  for (let i = 0; i < 9; i++) {
+    html += `<button onclick="move(${i})" id="b${i}"> </button>`;
+    if ((i + 1) % 3 === 0) html += "<br>";
+  }
+
+  html += "</div><p id='ticResult'></p>";
+
+  document.getElementById("game").innerHTML = html;
+
+  window.board = board;
+  window.turn = turn;
+}
+
+function move(i) {
+  if (board[i] === "") {
+    board[i] = turn;
+    document.getElementById("b" + i).innerHTML = turn;
+
+    if (checkWin(turn)) {
+      document.getElementById("ticResult").innerHTML =
+        "🎉 Player " + turn + " Wins!";
+      return;
+    }
+
+    turn = turn === "X" ? "O" : "X";
+  }
+}
+
+function checkWin(p) {
+  const win = [
+    [0,1,2],[3,4,5],[6,7,8],
+    [0,3,6],[1,4,7],[2,5,8],
+    [0,4,8],[2,4,6]
+  ];
+
+  return win.some(c =>
+    board[c[0]] === p &&
+    board[c[1]] === p &&
+    board[c[2]] === p
+  );
+}
+</script>
+
+</body>
+</html>
